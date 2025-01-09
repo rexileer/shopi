@@ -32,7 +32,6 @@ class Category(models.Model):
 
     name = models.CharField("Категория", max_length=100, db_index=True)
     parent = models.ForeignKey(
-        'Родительская категория',
         'self',
         blank=True,
         null=True,
