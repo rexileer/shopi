@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Introduction Section -->
+
+<section class="container py-4 text-center">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Product List</h1>
+            <br>
+            <p class="lead text-muted">Below is a list of all the available products.</p>
+            <br>
+            <a href='#' class="btn btn-success my-2 my-sm-0">Create an account</a>
+        </div>
+    </div>
+</section>
+
+<!-- All products section -->
+
+<section class="album py-5">
+    <div class="container">
+        <div class="pb-3 h5">All products</div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+            {% for product in products %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    <img src="{{ product.image.url }}" class="img-fluid" alt="Responsive image">
+                    <div class="card-body">
+                        <p class="card-text">
+                            <a class="text-black text-decoration-none fs-4" href="{{product.get_absolute_url}}">{{product.name|capfirst}}</a>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center badge bg-success text-wrap" style="width: 6rem;">
+                            <h5 class="card-title">{{product.price}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+
+{% endblock %}
