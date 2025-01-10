@@ -79,8 +79,8 @@ class Category(models.Model):
             self.slug = slugify(rand_slug() + '-pickBetter' + self.name)
         super(Category, self).save(*args, **kwargs)
         
-    # def get_absolute_url(self):
-    #     return reverse('shop:category', args=[self.slug])
+    def get_absolute_url(self):
+        return reverse('shop:category-list', args=[self.slug])
     
 
 class Product(models.Model):
@@ -123,8 +123,8 @@ class Product(models.Model):
 
         return self.name
     
-    # def get_absolute_url(self):
-    #     return reverse('shop:product', args=[self.slug])
+    def get_absolute_url(self):
+        return reverse('shop:product-detail', args=[self.slug])
     
     
 class ProductManager(models.Manager):
@@ -133,7 +133,7 @@ class ProductManager(models.Manager):
         Return a QuerySet of all avaliable products.
         """
         
-        return super(ProductManager, self).get_queryset().filter(avaliable=True)
+        return super(ProductManager, self).get_queryset().filter(available=True)
     
 class ProductProxy(Product):
     
