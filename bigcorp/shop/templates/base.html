@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Shop{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .navbar {
+            background-color: #1f1f1f;
+        }
+        .navbar-brand, .nav-link {
+            color: #e0e0e0 !important;
+        }
+        .navbar-brand:hover, .nav-link:hover {
+            color: #bb86fc !important;
+        }
+        a {
+            color: #bb86fc;
+        }
+        a:hover {
+            color: #3700b3;
+        }
+        footer {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .dropdown-menu .dropdown-menu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            margin-top: 0;
+        }
+        .dropdown-menu .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">My Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <div class="ms-auto d-none d-lg-block"></div>
+                    <div class="input-group">
+                        <!-- <span class="input-group-text bg-dark text-white"><i class="fa-solid fa-magnifying-glass"></i></span> -->
+                        <input type="text" name="q" placeholder="ex. Samsung" class="form-control" style="color: #202020; background-color: #b6b6b6" />
+                        <button class="btn btn-dark btn-outline-black text-light search-button">Search</button>
+                    </div>
+                </div>
+                <ul class="navbar-nav ms-auto">
+                    {% for i in categories %}
+                    {% if not i.children.all %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{i.get_absolute_url}}">{{i.name|upper }}</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{i.get_absolute_url}}" 
+                            id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{i.name|upper}}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdownMenuLink">
+                            {% for obj in i.children.all %}{% if not obj.children.all %}
+                            <li><a class="dropdown-item" href="{{obj.get_absolute_url}}">{{obj.name|upper}}</a></li>
+                            {% else %}
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="{{obj.get_absolute_url}}">{{obj.name|upper}}</a>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    {% for subobj in obj.children.all %}{% if not subobj.children.all %}
+                                    <li><a class="dropdown-item" href="{{subobj.get_absolute_url}}">{{subobj.name|upper}}</a></li>
+                                    {% else %}
+                                    <li class="dropdown-submenu">
+                                        <a class="dropdown-item dropdown-toggle" href="{{subobj.get_absolute_url}}">{{subobj.name|upper}}</a>
+                                        <ul class="dropdown-menu dropdown-menu-dark">
+                                            {% for lastobj in subobj.children.all %}
+                                            <li><a class="dropdown-item" href="{{lastobj.get_absolute_url}}">{{lastobj.name|upper}}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart/">Cart</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/account/">Account</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 My Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdowns = document.querySelectorAll('.nav-item.dropdown');
+        dropdowns.forEach(dropdown => {
+            dropdown.addEventListener('mouseenter', function () {
+                const menu = this.querySelector('.dropdown-menu');
+                const toggle = this.querySelector('.dropdown-toggle');
+                menu.classList.add('show');
+                toggle.setAttribute('aria-expanded', 'true');
+            });
+            dropdown.addEventListener('mouseleave', function () {
+                const menu = this.querySelector('.dropdown-menu');
+                const toggle = this.querySelector('.dropdown-toggle');
+                menu.classList.remove('show');
+                toggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    });
+</script>
+</html>
