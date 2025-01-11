@@ -5,7 +5,7 @@ from shop.models import ProductProxy
 
 
 def cart_view(request):
-    pass
+    return render(request, 'cart/cart-view.html')
 
 
 def cart_add(request):
