@@ -1,6 +1,7 @@
 {% include "base.html" %}
 
 {% load static %}
+{% load mathfilters %}
 
 {% block content %}
 
@@ -36,7 +37,7 @@
                         <div class="row p-3">
                             <div class="col-6">Product</div>
                             <div class="col-6 text-end">
-                                <span class="fw-bold h4">$ {{ product.price }}</span>
+                                <span class="fw-bold h4">$ {{ product.price|mul:item.qty }}</span>
                             </div>
                         </div>
                     </div>
