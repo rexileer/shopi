@@ -1,0 +1,70 @@
+{% include "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<main class="pt-5">
+    <div class="container">
+        <div class="pb-3 h5">Cart</div>
+        <hr>
+    
+        <br>
+        <div class="row mb-4 border product-item">
+            <div class="col-md-3 col-lg-2 order-md-first">
+                <img 
+                src="{{ product.image.url }}" 
+                class="img-fluid" 
+                alt="Responsive image"
+                width="200px"
+                />
+            </div>
+            <div class="col-md-9 col-lg-10 ps-md-3 ps-lg-10">
+                <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-info">
+                    <h1 class="h5 pt-2">title</h1>
+                </a>
+                <div class="border">
+                    <div class="col border-bottom">
+                        <div class="row p-3">
+                            <div class="col-6">Product</div>
+                            <div class="col-6 text-end">
+                                <span class="fw-bold h4">$ 99</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row p-3">
+                            <div class="col-12">
+                                <label for="select">Qty</label>
+                                &nbsp;
+                                <select id="select">
+                                    <option selected></option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                                <br>
+                                <br>
+                                <button class="btn btn-primary btn-sm update-button" type="button" data-index="">Update</button>
+                                &nbsp;
+                                <button class="btn btn-danger btn-sm delete-button" type="button" data-index="">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-end">
+            <div class="h6 fw-bold">
+                Total: $ 
+                <div id="total" class="d-inline-flex">99</div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+
+</script>
+{% endblock %}
