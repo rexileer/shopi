@@ -46,7 +46,7 @@
                             <div class="col-12">
                                 <label for="select">Qty</label>
                                 &nbsp;
-                                <select id="select">
+                                <select id="select{{product.id}}">
                                     <option selected>{{ item.qty }}</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -90,6 +90,30 @@
             method: 'POST',
             data: {
                 product_id: $(this).data('index'),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(response){
+                document.getElementById('lblCartCount').textContent = response.qty
+                document.getElementById('total').textContent = response.total
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log(error)
+            }
+        })
+    })
+
+    $(document).on('click', '.update-button', function(e){
+        e.preventDefault();
+
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cart:update-cart' %}",
+            method: 'POST',
+            data: {
+                product_id: $(this).data('index'),
+                product_qty: $('#select' + product_id + ' option:selected').text(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 action: 'post'
             },
