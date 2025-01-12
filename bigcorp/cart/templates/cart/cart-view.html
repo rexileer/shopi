@@ -113,7 +113,7 @@
             method: 'POST',
             data: {
                 product_id: $(this).data('index'),
-                product_qty: $('#select' + product_id + ' option:selected').text(),
+                product_qty: $('#select' + $(this).data('index') + ' option:selected').text(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 action: 'post'
             },
