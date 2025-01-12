@@ -56,9 +56,9 @@
                                 </select>
                                 <br>
                                 <br>
-                                <button class="btn btn-primary btn-sm update-button" type="button" data-index="">Update</button>
+                                <button class="btn btn-primary btn-sm update-button" type="button" data-index="{{ product.id }}">Update</button>
                                 &nbsp;
-                                <button class="btn btn-danger btn-sm delete-button" type="button" data-index="">Delete</button>
+                                <button class="btn btn-danger btn-sm delete-button" type="button" data-index="{{ product.id }}">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -81,6 +81,27 @@
     </div>
 </main>
 <script>
+    $(document).on('click', '.delete-button', function(e){
+        e.preventDefault();
 
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cart:delete-from-cart' %}",
+            method: 'POST',
+            data: {
+                product_id: $(this).data('index'),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(response){
+                document.getElementById('lblCartCount').textContent = response.qty
+                document.getElementById('total').textContent = response.total
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log(error)
+            }
+        })
+    })
 </script>
 {% endblock %}
