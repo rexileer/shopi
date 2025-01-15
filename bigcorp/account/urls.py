@@ -10,7 +10,7 @@ urlpatterns = [
     
     path('register/', views.register_view, name='register'),
     path('email-verification/', 
-        lambda request:render(request, 'account/registration/email-verification.html'),
+        lambda request:render(request, 'account/email/email-verification.html'),
         name='email-verification',
         ),
     
