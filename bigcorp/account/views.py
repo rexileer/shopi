@@ -26,7 +26,7 @@ def register_view(request):
             
             send_email(user)
             
-            return redirect(request, '/account/email-verification/')
+            return redirect('/account/email-verification/')
     else:
         form = UserCreateForm()
     return render(request, 'account/registration/register.html', {'form': form})
