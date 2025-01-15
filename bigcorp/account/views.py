@@ -26,9 +26,7 @@ def register_view(request):
             
             send_email(user)
             
-            login(request, user)
-            messages.success(request, 'Account created successfully')
-            return redirect('shop:home')
+            return redirect(request, '/account/email-verification/')
     else:
         form = UserCreateForm()
     return render(request, 'account/registration/register.html', {'form': form})

@@ -1,0 +1,63 @@
+{% include "base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+<style>
+
+    #timer {
+        font-family: sans-serif;
+        font-size: 24px;
+        color: red;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+</style>
+{% endblock extra_css %}
+
+{% block title %}
+<title>Email Verification</title>
+{% endblock title %}
+
+{% block content %}
+
+<div class="container bg-light p-3 shadow-md p-3">
+    {% if success %}
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Email verification successful!</h4></h4>
+        <p>Ваш адрес электронной почты успешно подтвержден. Спасибо за регистрацию!</p>
+        <p>You will be redirected to the home page in <span id="timer"></span> seconds.</p></p>
+    </div>
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Email verification failed!</h4>
+        <p>Ваш адрес электронной почты не был подтвержден. Пожалуйста, проверьте вашу электронную почту.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+
+    // Set a timeout to redirect to the home page
+    $(document).ready(function() {
+        // Set the initial timer value
+        var timerValue = 7;
+        $('#timer').html(timerValue);
+
+        // Start a timer that counts down
+        setInterval(function() {
+            // Decrement the timer value
+            timerValue--;
+
+            // Update the timer display
+            $('#timer').html(timerValue);
+
+            // If the timer has reached zero, redirect to the home page
+            if (timerValue === 0) {
+                window.location.href = '/shop/';
+            }
+        }, 1000);
+    })
+</script>
+{% endblock content %}
