@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block extra_css %}
+
+<style>
+    body {
+        background-color: rgb(7, 7, 7);
+    }
+
+    .btn-register {
+        transition: 0.5s;
+    }
+
+    .btn-register:hover {
+        background-color: greenyellow;
+        transform: scale(1.1);
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<br>
+
+<div class="container bg-light p-3 shadow-md p-5 form-layout text-dark">
+
+    <h3>Update info of your account</h3>
+    <br>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-secondary w-100 btn-block p-2 btn-register">Update account</button>
+    </form>
+
+</div>
+
+{% endblock %}

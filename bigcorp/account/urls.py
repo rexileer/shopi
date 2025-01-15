@@ -14,4 +14,15 @@ urlpatterns = [
         name='email-verification',
         ),
     
+    # Login and Logout
+    
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    
+    # Dashboard
+    
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('profile-management/', views.profile_management_view, name='profile-management'),
+    path('account-delete/', views.account_delete, name='account-delete'),
+    
 ]
