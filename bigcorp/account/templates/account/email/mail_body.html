@@ -2,11 +2,11 @@
 
 <p>
     Please click the link below to verify your email.<br>
-    <a href="http://{{domain}}{% url 'account_email_verify' user.id %}">Verify Email</a><br>
+    <a href="{{ link }}">Verify Email</a><br>
 </p>
 <p>
     Or copy and paste this link in your browser.<br>
-    <a href="http://{{domain}}{% url 'account_email_verify' user.id %}">http://{{domain}}{% url 'account_email_verify' user.id %}</a><br>
+    <a href="{{ link }}">{{ link }}</a><br>
 </p>
 
 <strong>Token expires on {{ expiry|time:"TIME_FORMAT" }}</strong>
