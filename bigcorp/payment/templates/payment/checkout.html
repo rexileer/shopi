@@ -1,0 +1,84 @@
+
+{% extends "base.html" %}
+
+
+{% load static %}
+
+
+{% block content %}
+    <body>
+        <br>
+        <div class="container bg-light shadow-md p-5 text-dark" style="width:500px; border-radius:20px;">
+            <form id="form">
+                <div>
+                    <h3> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i> &nbsp; Complete your order </h3>
+                    <p> Please enter in the relevant information below. </p>
+                    <hr>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="name" type="text" placeholder="Full name*" autocomplete="off" value="{{shipping_address.full_name}}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="email" type="email" placeholder="Email address*" autocomplete="off" value="{{shipping_address.email}}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="country" type="text" placeholder="Country*" autocomplete="off" value="{{shipping_address.country}}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="city" type="text" placeholder="City*" autocomplete="off" value="{{shipping_address.city}}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="street" type="text" placeholder="Street*" autocomplete="off" value="{{shipping_address.street}}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="apartment" type="text" placeholder="Apartment*" autocomplete="off" value="{{shipping_address.apartment}}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="zip" type="text" placeholder="Zip code*" autocomplete="off" value="{{shipping_address.zip}}" required>
+                    </div>
+                    <br>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary w-100 btn-block p-2 btn-register" id="complete-order"> &nbsp; Complete order</button>
+                <br>
+            </form>
+        </div>
+        <br>
+    </body>
+
+<script>
+    $(document).on('submit', function(e){
+        e.preventDefault();
+
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'payment:complete-order' %}",
+            data: {
+                name: $('#name').val(),
+                email: $('#email').val(),
+                country: $('#country').val(),
+                city: $('#city').val(),
+                street: $('#street').val(),
+                apartment: $('#apartment').val(),
+                zip: $('#zip').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'payment'
+            },
+            success: function (response) {
+                window.location.href = "{% url 'payment:payment-success' %}"
+            },
+            error: function (xhr, status, error) {
+                window.location.href = "{% url 'payment:payment-fail' %}"
+                console.log(error)
+            }
+        })
+    })
+
+</script>
+{% endblock %}
