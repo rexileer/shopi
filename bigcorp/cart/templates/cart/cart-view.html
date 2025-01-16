@@ -75,8 +75,15 @@
         <div class="col-12 text-end">
             <div class="h6 fw-bold">
                 Total: $ 
-                <div id="total" class="d-inline-flex">{{ cart.get_total_price }}</div>
+                <div id="total" class="d-inline-flex">
+                    {{ cart.get_total_price }}
+                </div>
             </div>
+            <button type="button" class="btn btn-success btn-md text-dark mt-4">
+                <a class="nav-link text-decoration-none" href="{% url 'payment:checkout' %}">
+                    Checkout
+                </a>
+            </button>
         </div>
     </div>
 </main>
