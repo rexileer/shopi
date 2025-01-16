@@ -1,11 +1,11 @@
 from django import forms
 
-from .models import ShippingAdress
+from .models import ShippingAddress
 
 
-class ShippingAdressForm(forms.ModelForm):
+class ShippingAddressForm(forms.ModelForm):
     class Meta:
-        model = ShippingAdress
+        model = ShippingAddress
         fields = [
             "full_name",
             "email",
