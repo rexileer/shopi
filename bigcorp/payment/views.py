@@ -32,6 +32,18 @@ def shipping_view(request):
 
 
 def checkout_view(request):
+    """
+    Renders the checkout page. If the user is authenticated and has a shipping address,
+    it displays the checkout form with the user's shipping information. Otherwise, it
+    renders the checkout page without pre-filled shipping details.
+
+    Args:
+        request (HttpRequest): The request object containing user and session details.
+
+    Returns:
+        HttpResponse: The rendered checkout page with or without shipping details.
+    """
+
     if request.user.is_authenticated:
         shipping_address = get_object_or_404(ShippingAddress, user=request.user)
         if shipping_address:
