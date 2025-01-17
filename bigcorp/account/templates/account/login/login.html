@@ -32,6 +32,39 @@
         {{ form|crispy }}
         <button class="btn btn-secondary w-100 btn-block p-2 btn-register" type="submit" value="Login">Login</button>
     </form>
+
+    {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            {% for field in form %}
+                {% if field.errors %}
+                    {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">
+            {{ message|safe}}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="text-center mt-3">
+        <a href="{% url 'account:register' %}">
+            Create an account
+        </a>
+    </div>
+
+    <div class="text-center mt-3">
+        <a href="{% url 'account:password_reset' %}">
+            Reset password    
+        </a>
+    </div>
+
 </div>
 
 {% endblock %}
