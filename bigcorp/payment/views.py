@@ -1,11 +1,25 @@
+from decimal import Decimal
+import uuid
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import JsonResponse
+from django.urls import reverse
+
+import stripe
+from yookassa import Configuration, Payment
 
 from cart.cart import Cart
 
 from .forms import ShippingAddressForm
 from .models import ShippingAddress, Order, OrderItem
+
+from django.conf import settings
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+stripe.api_version = settings.STRIPE_API_VERSION
+
+Configuration.account_id = settings.YOOKASSA_SHOP_ID
+Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
 
 
 @login_required(login_url='account:login')
@@ -52,7 +66,8 @@ def checkout_view(request):
 
 
 def complete_order_view(request):
-    if request.POST.get('action') == 'payment':
+    if request.method == 'POST':
+        payment_type = request.POST.get('stripe-payment', 'yookassa-payment')
         name = request.POST.get('name')
         email = request.POST.get('email')
         country = request.POST.get('country')
@@ -63,49 +78,137 @@ def complete_order_view(request):
 
         cart = Cart(request)
         total_price = cart.get_total_price()
-
-        shipping_address, _ = ShippingAddress.objects.get_or_create(
-            user=request.user,
-            defaults={
-                'full_name': name,
-                'email': email,
-                'country': country,
-                'city': city,
-                'street': street,
-                'apartment': apartment,
-                'zip': zip
-            }
-        )
-
-        if request.user.is_authenticated:
-            order = Order.objects.create(
-                user=request.user,
-                shipping_address=shipping_address,
-                amount=total_price
-            )
-
-            for item in cart:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item['product'],
-                    quantity=item['qty'],
-                    price=item['price'],
-                    user=request.user
+        
+        match payment_type:
+            case 'stripe-payment':
+                shipping_address, _ = ShippingAddress.objects.get_or_create(
+                    user=request.user,
+                    defaults={
+                        'full_name': name,
+                        'email': email,
+                        'country': country,
+                        'city': city,
+                        'street': street,
+                        'apartment': apartment,
+                        'zip': zip
+                    }
                 )
-        else:
-            order = Order.objects.create(
-                shipping_address=shipping_address,
-                amount=total_price
-            )
+                session_data = {
+                    'mode': 'payment',
+                    'success_url': request.build_absolute_uri(reverse('payment:payment-success')),
+                    'cancel_url': request.build_absolute_uri(reverse('payment:payment-fail')),
+                    'line_items': []
+                }
+            
 
-            for item in cart:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item['product'],
-                    quantity=item['qty'],
-                    price=item['price'],
+                if request.user.is_authenticated:
+                    order = Order.objects.create(
+                        user=request.user,
+                        shipping_address=shipping_address,
+                        amount=total_price
+                    )
+
+                    for item in cart:
+                        OrderItem.objects.create(
+                            order=order,
+                            product=item['product'],
+                            quantity=item['qty'],
+                            price=item['price'],
+                            user=request.user
+                        )
+                        session_data['line_items'].append({
+                            'price_data': {
+                                'unit_amount': int(item['price'] * Decimal(100)),
+                                'currency': 'usd',
+                                'product_data': {
+                                    'name': item['product'].name,
+                                },
+                            },
+                            'quantity': item['qty'],
+                        })
+                        
+                        session = stripe.checkout.Session.create(**session_data)
+                        return redirect(session.url, code=303)
+                    
+                else:
+                    order = Order.objects.create(
+                        shipping_address=shipping_address,
+                        amount=total_price
+                    )
+
+                    for item in cart:
+                        OrderItem.objects.create(
+                            order=order,
+                            product=item['product'],
+                            quantity=item['qty'],
+                            price=item['price'],
+                        )
+                        
+            case 'yookassa-payment':
+                idempotence_key = uuid.uuid4().hex
+                currency = 'RUB'
+                description = 'Товары в корзине'
+                payment = Payment.create({
+                    "amount": {
+                        "value": str(total_price * 102),
+                        "currency": currency
+                    },
+                    "confirmation": {
+                        "type": "redirect",
+                        "return_url": request.build_absolute_uri(reverse('payment:payment-success')),
+                        "cancel_url": request.build_absolute_uri(reverse('payment:payment-fail'))
+                    },
+                    "capture": True,
+                    "test": True,
+                    "description": description,
+                }, idempotence_key)
+                
+                shipping_address, _ = ShippingAddress.objects.get_or_create(
+                    user=request.user,
+                    defaults={
+                        'full_name': name,
+                        'email': email,
+                        'country': country,
+                        'city': city,
+                        'street': street,
+                        'apartment': apartment,
+                        'zip': zip
+                    }
                 )
-        return JsonResponse({'success': True})
+
+                confirmation_url = payment.confirmation.confirmation_url
+                
+                if request.user.is_authenticated:
+                    order = Order.objects.create(
+                        user=request.user,
+                        shipping_address=shipping_address,
+                        amount=total_price
+                    )
+
+                    for item in cart:
+                        OrderItem.objects.create(
+                            order=order,
+                            product=item['product'],
+                            quantity=item['qty'],
+                            price=item['price'],
+                            user=request.user
+                        )
+
+                    return redirect(confirmation_url)
+                
+                else:
+                    order = Order.objects.create(
+                        shipping_address=shipping_address,
+                        amount=total_price
+                    )
+
+                    for item in cart:
+                        OrderItem.objects.create(
+                            order=order,
+                            product=item['product'],
+                            quantity=item['qty'],
+                            price=item['price'],
+                        )
 
 
 def payment_success_view(request):
