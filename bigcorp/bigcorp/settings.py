@@ -107,6 +107,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [
     BASE_DIR / 'bigcorp' / 'static',
+    BASE_DIR / 'shop' / 'static',
 ]
 
 MEDIA_URL = '/media/'

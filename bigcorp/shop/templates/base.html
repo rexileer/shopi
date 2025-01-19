@@ -1,188 +1,26 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My Shop{% endblock %}</title>
-    <!-- Bootstrap CSS -->
-    <script 
-    src="https://code.jquery.com/jquery-3.6.4.min.js" 
-    integrity="sha384-UG8ao2jwOWB7/oDdObZc6ItJmwUkR/PfMyt9Qs5AwX7PsnYn1CRKCTWyncPTWvaS" 
-    crossorigin="anonymous">
-    </script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <style>
-
-        .form-layout {
-            border-radius: 20px;
-            width: 500px;
-        }
-
-        .badge {
-            padding-left: 9px;
-            padding-right: 9px;
-            -webkit-border-radius: 9px;
-            -moz-border-radius: 9px;
-            border-radius: 9px;
-        }
-
-        .label-warning[href],
-        .badge-warning[href] {
-            background-color: #c67605;
-        }
-
-        #lblCartCount {
-            font-size: 12px;
-            background: #3c9700;
-            color: #fff;
-            padding: 0 5px;
-            vertical-align: top;
-            margin-left: -2px;
-        }
-
-        body {
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-        .navbar {
-            background-color: #1f1f1f;
-        }
-        .navbar-brand, .nav-link {
-            color: #e0e0e0 !important;
-        }
-        .navbar-brand:hover, .nav-link:hover {
-            color: #bb86fc !important;
-        }
-        a {
-            color: #bb86fc;
-        }
-        a:hover {
-            color: #3700b3;
-        }
-        footer {
-            background-color: #1f1f1f;
-            color: #e0e0e0;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        .dropdown-menu .dropdown-menu {
-            position: absolute;
-            left: 100%;
-            top: 0;
-            margin-top: 0;
-        }
-        .dropdown-menu .dropdown-submenu:hover > .dropdown-menu {
-            display: block;
-        }
-    </style>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- Head imports -->
+        {% include 'shop/_partials/_head_imports.html' %}
+        <!-- Title -->
+        <title>{% block title %} Home {% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'shop/css/base.css' %}">
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/png" href="{% static 'shop/images/favicon.ico' %}" >
+        {% block head %} {% endblock head %}
+    </head>
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'shop:products' %}">My Shop</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <div class="ms-auto d-none"></div>
-                    <div class="input-group w-50">
-                        <!-- <span class="input-group-text bg-dark text-white"><i class="fa-solid fa-magnifying-glass"></i></span> -->
-                        <input type="text" name="q" placeholder="ex. Samsung" class="form-control" style="color: #202020; background-color: #b6b6b6" />
-                        <button class="btn btn-dark btn-outline-black text-light search-button">Search</button>
-                    </div>
-                </div>
-                <ul class="navbar-nav ms-auto">
-                    {% for i in categories %}
-                    {% if not i.children.all %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{i.get_absolute_url}}">{{i.name|upper }}</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{{i.get_absolute_url}}" 
-                            id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{i.name|upper}}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdownMenuLink">
-                            {% for obj in i.children.all %}{% if not obj.children.all %}
-                            <li><a class="dropdown-item" href="{{obj.get_absolute_url}}">{{obj.name|upper}}</a></li>
-                            {% else %}
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="{{obj.get_absolute_url}}">{{obj.name|upper}}</a>
-                                <ul class="dropdown-menu dropdown-menu-dark">
-                                    {% for subobj in obj.children.all %}{% if not subobj.children.all %}
-                                    <li><a class="dropdown-item" href="{{subobj.get_absolute_url}}">{{subobj.name|upper}}</a></li>
-                                    {% else %}
-                                    <li class="dropdown-submenu">
-                                        <a class="dropdown-item dropdown-toggle" href="{{subobj.get_absolute_url}}">{{subobj.name|upper}}</a>
-                                        <ul class="dropdown-menu dropdown-menu-dark">
-                                            {% for lastobj in subobj.children.all %}
-                                            <li><a class="dropdown-item" href="{{lastobj.get_absolute_url}}">{{lastobj.name|upper}}</a></li>
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-                                    {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                            {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    {% endif %}
-                    {% endfor %}
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link mx-2 text-uppercase" href="{% url 'cart:cart-view' %}">
-                            <i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart
-                            <span id="lblCartCount" class="badge badge-warning">
-                                {% with cart_qty=cart|length %}
-                                {% if cart_qty > 0 %}
-                                {{cart_qty}}
-                                {% else %}
-                                0
-                                {% endif %}
-                                {% endwith %}
-                            </span>
-                        </a>
-                    </li>
-
-                    {% if user.is_authenticated %}
-
-                    <li class="nav-item">
-                        <a class="nav-link mx-2 text-uppercase" href="{% url 'account:dashboard' %}">
-                            <i class="fa-solid fa-circle-user me-1"></i>@{{user.username}} Account
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link mx-2 text-uppercase" href="{% url 'account:logout' %}">
-                            <i class="fa-solid fa-circle-user me-1"></i> Logout
-                        </a>
-                    </li>
-                    {% else %}
-
-                    <li class="nav-item">
-                        <a class="nav-link mx-2 text-uppercase" href="{% url 'account:register' %}">
-                            <i class="fa-solid fa-circle-user me-1"></i> Register
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link mx-2 text-uppercase" href="{% url 'account:login' %}">
-                            <i class="fa-solid fa-circle-user me-1"></i> Login
-                        </a>
-                    </li>
-                    
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include "shop/_partials/_navbar.html" %}
 
     <!-- Main Content -->
     <main class="container py-5">
@@ -191,18 +29,21 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 My Shop. All rights reserved.</p>
-        </div>
-    </footer>
+    {% include "shop/_partials/_footer.html" %}
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     {% block extra_js %}{% endblock %}
 
 </body>
-<script>
+<script src="{% static 'shop/js/base.js' %}">
+    const date = new Date();
+    document.querySelector(".year").innerHTML = date.getFullYear();
+    
+    setTimeout(function () {
+      $("#message").fadeOut("slow");
+    }, 3000);
+    
     document.addEventListener('DOMContentLoaded', function () {
         const dropdowns = document.querySelectorAll('.nav-item.dropdown');
         dropdowns.forEach(dropdown => {
