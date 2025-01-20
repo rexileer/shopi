@@ -42,7 +42,7 @@ def shipping_view(request):
     context = {
         'form': form,
     }
-    return render(request, 'payment/shipping.html', context)
+    return render(request, 'shipping/shipping.html', context)
 
 
 def checkout_view(request):
