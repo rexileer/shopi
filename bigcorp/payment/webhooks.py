@@ -10,6 +10,7 @@ from yookassa.domain.common import SecurityHelper
 from yookassa.domain.notification import (WebhookNotificationEventType, WebhookNotificationFactory)
 
 from .models import Order
+from .tasks import send_order_confirmation
 
 
 @require_POST
@@ -38,6 +39,8 @@ def stripe_webhook(request):
                 order_id = session['client_reference_id']
             except Order.DoesNotExist:
                 return HttpResponse(status=404)
+            
+            send_order_confirmation.delay(order_id)
             order = Order.objects.get(id=order_id)
             order.paid = True
             order.save()
