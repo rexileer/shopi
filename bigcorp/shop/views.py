@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import ListView
 
 from .models import Category, ProductProxy
@@ -47,3 +47,13 @@ def category_list(request, slug):
         'products': products,
     }
     return render(request, 'shop/category_list.html', context)
+
+def search_products(request):
+    query = request.GET.get('q')
+    products = ProductProxy.objects.filter(name__icontains=query).distinct()
+    context = {
+        'products': products,
+    }
+    if not query or not products:
+        return redirect('shop:products')
+    return render(request, 'shop/products.html', context)
