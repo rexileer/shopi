@@ -12,7 +12,7 @@ class CategoryAdmin(admin.ModelAdmin):
     
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category', 'brand', 'slug', 'price', 'available', 'created_at', 'updated_at']
+    list_display = ['name', 'category', 'brand', 'slug', 'price', 'discount', 'available', 'created_at', 'updated_at']
     list_filter = ['category', 'available', 'created_at', 'updated_at']
     ordering = ['name']
     
