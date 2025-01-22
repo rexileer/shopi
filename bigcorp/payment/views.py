@@ -2,8 +2,12 @@ from decimal import Decimal
 import uuid
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
-from django.http import JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.urls import reverse
+from django.template.loader import render_to_string
+from django.templatetags.static import static
+from django.contrib.admin.views.decorators import staff_member_required
+import weasyprint
 
 import stripe
 from yookassa import Configuration, Payment
@@ -224,3 +228,18 @@ def payment_success_view(request):
 
 def payment_fail_view(request):
     return render(request, 'payment/payment-fail.html')
+
+@staff_member_required
+def admin_order_pdf(request, order_id):
+    try:
+        order = Order.objects.select_related('user', 'shipping_address').get(id=order_id)
+    except Order.DoesNotExist:
+        raise Http404('Order does not exist')
+    html = render_to_string('payment/order/pdf/pdf_invoice.html', {'order': order})
+    response = HttpResponse(content_type='application/pdf')
+    css_path = static('payment/css/pdf.css').lstrip('/')
+    stylesheets = [weasyprint.CSS(css_path)]
+    weasyprint.HTML(string=html).write_pdf(response, stylesheets=stylesheets)
+    return response
+    
+    
