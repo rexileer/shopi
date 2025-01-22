@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% load thumbnail %}
-
 {% block content %}
 
 <!-- Introduction Section -->
@@ -26,25 +24,7 @@
         <hr>
         <br>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
-            {% for product in products %}
-            <div class="col">
-                <a class="text-light text-decoration-none fs-4" href="{{product.get_absolute_url}}">
-                    <div class="card shadow-sm bg-dark h-100">
-                        {% thumbnail product.image "300x300" crop="center" as im %}
-                            <img src="{{ im.url }}" class="img-fluid h-100" alt="Responsive image">
-                        {% endthumbnail %}
-                        <div class="card-body">
-                            <p class="card-text text-light">
-                                {{product.name|capfirst}}
-                            </p>
-                            <div class="d-flex badge bg-success text-wrap" style="width: 6rem;">
-                                <h5 class="card-title mb-1 mt-1">$ {{product.price}}</h5>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
+            {% include "shop/components/product_list.html" %}
         </div>
     </div>
 </section>

@@ -1,17 +1,27 @@
 from django.shortcuts import render, get_object_or_404
-
+from django.views.generic import ListView
 
 from .models import Category, ProductProxy
 
 
-def products_view(request):
-    """
-    Return a list of all products.
+# def products_view(request):
+#     """
+#     Return a list of all products.
 
-    This view shows all products, in a grid.
-    """
-    products = ProductProxy.objects.all()
-    return render(request, 'shop/products.html', {'products': products})
+#     This view shows all products, in a grid.
+#     """
+#     products = ProductProxy.objects.all()
+#     return render(request, 'shop/products.html', {'products': products})
+
+class ProductListView(ListView):
+    model = ProductProxy
+    context_object_name = 'products'
+    paginate_by = 15
+    
+    def get_template_names(self):
+        if self.request.htmx:
+            return 'shop/components/product_list.html'
+        return 'shop/products.html'
 
 def product_detail_view(request, slug):
     """
