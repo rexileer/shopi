@@ -3,7 +3,7 @@ document.querySelector(".year").innerHTML = date.getFullYear();
 
 setTimeout(function () {
   $("#message").fadeOut("slow");
-}, 3000);
+}, 5000);
 
 document.addEventListener('DOMContentLoaded', function () {
     const dropdowns = document.querySelectorAll('.nav-item.dropdown');
