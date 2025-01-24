@@ -14,15 +14,12 @@
         {% for item in cart %}
         {% with product=item.product %}
 
-
-
-        
     
         <br>
         <div class="row mb-4 border product-item">
             <div class="col-md-3 col-lg-2 order-md-first">
                 <img 
-                src="{{ product.image.url }}" 
+                src="{{ product.full_image_url }}" 
                 class="img-fluid" 
                 alt="Responsive image"
                 width="200px"
@@ -37,7 +34,16 @@
                         <div class="row p-3">
                             <div class="col-6">Product</div>
                             <div class="col-6 text-end">
-                                <span class="fw-bold h4">$ {{ product.price|mul:item.qty }}</span>
+                                {% if product.discount %}
+                                    <span class="text-decoration-line-through fw-bold text-secondary me-2">
+                                        $ {{product.price|mul:item.qty}} 
+                                    </span>
+                                    <span class="fw-bold h4">
+                                        ${{product.get_discounted_price|mul:item.qty}}
+                                    </span>
+                                {% else %}
+                                    <span class="fw-bold h4">$ {{ product.price|mul:item.qty }}</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
