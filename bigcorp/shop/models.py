@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from django.utils.text import slugify
 import random
@@ -130,7 +131,7 @@ class Product(models.Model):
         return reverse('shop:product-detail', args=[self.slug])
     
     def get_discounted_price(self):
-        discounted_price = self.price * (self.price * self.discount / 100)
+        discounted_price = self.price * (Decimal(1) - Decimal(self.discount) / Decimal(100))
         return round(discounted_price, 2)
     
     @property
