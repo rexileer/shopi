@@ -1,6 +1,8 @@
 from pathlib import Path
 from dotenv import load_dotenv
+from django.contrib import messages
 import os
+
 
 load_dotenv()
 
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'cart',
     'account',
     'payment',
+    'recommend',
 ]
 
 MIDDLEWARE = [
@@ -120,6 +123,14 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-secondary',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
 
 
 #Crispy forms
