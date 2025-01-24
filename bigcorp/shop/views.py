@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import ListView
+from django.contrib import messages
 
 from .models import Category, ProductProxy
 
@@ -24,14 +25,28 @@ class ProductListView(ListView):
         return 'shop/products.html'
 
 def product_detail_view(request, slug):
-    """
-    Return a detailed view of a product.
+    product = get_object_or_404(ProductProxy.objects.select_related('category'), slug=slug)
+    
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if product.reviews.filter(created_by=request.user).exists():
+                messages.error(request, 'You have already reviewed this product')
+            else:
+                rating = request.POST.get('rating', 3)
+                content = request.POST.get('content', '')
+                if content:
+                    product.reviews.create(rating=rating, content=content, created_by=request.user, product=product)
+                    return redirect(request.path)
+        else:
+            messages.error(request, 'You must be logged in to review a product')
 
-    This view shows the product in a form that is more detailed than the
-    product list view.
-    """
-    product = get_object_or_404(ProductProxy, slug=slug)
-    return render(request, 'shop/product_detail.html', {'product': product})
+    context = {
+        'product': product
+    }
+    
+    return render(request, 'shop/product_detail.html', context)
+                
+
 
 def category_list(request, slug):
     """
