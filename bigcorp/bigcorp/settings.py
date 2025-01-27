@@ -86,10 +86,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bigcorp.wsgi.application'
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'default_db_name'),
+        'USER': os.getenv('POSTGRES_USER', 'default_user'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'default_password'),
+        'HOST': os.getenv('POSTGRES_HOST', 'db'),  # Имя сервиса базы данных в docker-compose.yml
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
 
