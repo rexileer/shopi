@@ -27,18 +27,11 @@ services:
       - db
     ports:
       - 8000:8000
-    links:
-      - db
     restart: always
-    command: sh -c "python3 manage.py makemigrations &&
-                    python3 manage.py migrate &&
-                    python3 manage.py collectstatic --noinput &&
-                    gunicorn bigcorp.wsgi:application --bind 0.0.0.0:8000 &&
-                    stripe listen --forward-to localhost:8000/payment/webhook-stripe/"
-    mem_limit: 2g  # Ограничение памяти до 2 GB
+    command: sh /app/entrypoint.sh
+    mem_limit: 2g
     networks:
       - shopi_default
-
 
   redis:
     image: redis:7.2.3-alpine
@@ -46,7 +39,6 @@ services:
     restart: unless-stopped
     networks:
       - shopi_default
-
 
   celery:
     build: ./bigcorp
@@ -59,7 +51,7 @@ services:
       - static_data:/app/static
     restart: always
     command: celery -A bigcorp worker --loglevel=info --beat
-    mem_limit: 2g  # Ограничение памяти до 2 GB
+    mem_limit: 2g
     networks:
       - shopi_default
 
@@ -75,7 +67,6 @@ services:
     restart: always
     networks:
       - shopi_default
-
 
 networks:
   shopi_default:
