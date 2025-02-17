@@ -1,0 +1,22 @@
+{
+    "name": "shopi",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "backend",
+    "workspaceFolder": "/app",
+    "shutdownAction": "stopCompose",
+    
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "python.pythonPath": "/usr/local/bin/python",
+          "python.linting.enabled": true,
+          "editor.formatOnSave": true
+        },
+        "extensions": [
+          "ms-python.python",
+          "ms-azuretools.vscode-docker"
+        ]
+      }
+    }
+  }
+  
