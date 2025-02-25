@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # 3rd party libs
+    'debug_toolbar',
     'mathfilters',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -56,6 +57,9 @@ MIDDLEWARE = [
     
     # HTMX Middleware
     'django_htmx.middleware.HtmxMiddleware',
+    
+    # Debug toolbar
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -249,4 +253,12 @@ DJOSER = {
         'user_create': 'api.serializers.CustomUserCreateSerializer',
     },
     'AUTH_HEADER_TYPES': ('JWT',),
+}
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+DEBUG_TOOLBAR_CONFIG = {
+    "ROOT_TAG_EXTRA_ATTRS": "data-turbo-permanent"
 }

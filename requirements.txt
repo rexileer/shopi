@@ -22,6 +22,7 @@ Django==5.1.4
 django-celery-beat==2.7.0
 django-celery-results==2.5.1
 django-crispy-forms==2.3
+django-debug-toolbar==5.0.1
 django-email-verification==0.3.3
 django-google-fonts==0.0.3
 django-htmx==1.21.0
