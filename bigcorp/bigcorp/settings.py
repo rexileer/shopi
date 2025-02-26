@@ -258,12 +258,11 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-DEBUG_TOOLBAR_CONFIG = {
-    "ROOT_TAG_EXTRA_ATTRS": "data-turbo-permanent"
-}
 
 def show_toolbar(request):
-    return True
+    return False
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
+    "ROOT_TAG_EXTRA_ATTRS": "data-turbo-permanent",
+    "IS_RUNNING_TESTS": False,
 }
