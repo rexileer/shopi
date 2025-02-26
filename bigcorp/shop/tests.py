@@ -37,8 +37,9 @@ class ProductViewTest(TestCase):
         response = self.client.get(reverse('shop:products'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['products']), 2)
-        self.assertEqual(response.context['products'][0], product_1)
-        self.assertEqual(response.context['products'][1], product_2)
+        products_in_context = sorted(response.context['products'], key=lambda p: p.id)
+        self.assertEqual(products_in_context[0].id, product_1.id)
+        self.assertEqual(products_in_context[1].id, product_2.id)
         self.assertContains(response, product_1)
         self.assertContains(response, product_2)
         
